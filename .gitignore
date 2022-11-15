@@ -38,3 +38,6 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# HTML files
+uw-dart-ws-plan-20221114.html
