@@ -2,25 +2,70 @@
 title: "Data Analysis for Reflective Teaching Workshop"
 author: "Colleen Craig"
 date: "`r Sys.Date()`"
-format: pptx
+format: 
+  pptx:
+    incremental: true
 editor: visual
 ---
 
-## Quarto
+## Our guiding questions
 
-Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
+- How does student performance / attendance in a large-lecture introductory science course correlate with class standing?
+- How does student performance / attendance in a large-lecture introductory science course correlate with major?
 
-## Bullets
+# Getting set up
 
-When you click the **Render** button a document will be generated that includes:
+## R code introduced in this section
 
--   Content authored with markdown
--   Output from executable code
+-   `library()`
+-   `tidyverse`
+- `ggplot`
+- `dplyr`
 
-## Code
+## Load the `tidyverse` Package of Functions
 
-When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+- To write the commands for this workshop, we need to load a package of functions that aren't already part of the standard R language. 
+  - _We could perform all the tasks in this workshop without these functions, but they will make our work much easier._
+- The package of functions we need is called the `tidyverse`, and the command we use to load it is `library()`. To run the code below, put your cursor on the line and type CRTL + ENTER at the same time.
 
-```{r}
-1 + 1
+```{r echo=TRUE}
+library(tidyverse)
 ```
+
+## About the `tidyverse`
+
+- The `tidyverse` is an umbrella package which itself contains several packages. 
+- The `tidyverse` packages we will use in particular are:
+  - `ggplot`: for data visualization
+  - `dplyr`: for data wrangling
+
+
+# Importing the Data
+
+## R code introduced in this section
+
+-   `dir()`
+-   `read_csv()`, with the `name_repair` option
+-   `glimpse()`
+-   `<-`: the assignment operator
+
+## ??
+
+- We will examine course data which is readily available from CANVAS gradebooks and the teaching tab on myUW
+<!-- Include links to instructions for obtaining these data files for the participants. -->
+- Sample data files are contained in the `data/` sub-directory in this JUPYTER NOTEBOOK
+- You can view the contents of `data/` in two different ways: 
+  - clicking in to the directory in the lower right-hand panel in RStudio 
+  - running the line of code below:
+
+```{r echo=TRUE, eval=FALSE}
+dir("data/") 
+```
+
+## Explore the `data/` Sub-directory
+
+The `data/` directory contains two files in the comma-separated values (csv) format:
+
+-   `Grades_quarter1.csv`: an anonymized and simplified subset of a real Canvas gradebook for an introductory STEM course at UW. <!--# (SAY: "IN THIS SUBSET OF DATA"…DON'T SAY "CLASS") -->
+-   `myUW_quarter1.csv`: an anonymized version of the MyUW classlist for the same course.
+
