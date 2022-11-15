@@ -1,7 +1,7 @@
 ---
 title: "UW DART Workshop Plan"
 author: "Colleen Craig"
-date: "2022-11-14"
+date: "2022-11-15"
 output: 
   html_document:
     keep_md: yes
@@ -90,7 +90,7 @@ The tidyverse is an umbrella package which itself contains several packages. The
 
 <!-- Should we bother to include `magrittr` and `tibble` in this list? -->
 
-### Import the data
+## Import the data
 
 R code introduced in this section:
 
@@ -171,7 +171,7 @@ myuw   <- read_csv("data/myUW_quarter1.csv", name_repair = "universal")
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
 ```
 
-**In English**: "The dataframe `grades` gets [ `<-`] the result of reading the csv file"data/Grades_quarter1.csv", with the universal name repair option enabled."
+**In English**: "The dataframe `grades` gets [ `<-`] the result of reading the csv file "data/Grades_quarter1.csv", with the universal name repair option enabled."
 
 Let's take a look at the contents of the dataframes using the `glimpse()` function
 
