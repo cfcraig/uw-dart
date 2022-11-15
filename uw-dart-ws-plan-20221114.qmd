@@ -17,8 +17,8 @@ editor: visual
 
 ## R code introduced in this section
 
--   `library()`
--   `tidyverse`
+- `library()`
+- `tidyverse`
 - `ggplot`
 - `dplyr`
 
@@ -68,4 +68,22 @@ The `data/` directory contains two files in the comma-separated values (csv) for
 
 -   `Grades_quarter1.csv`: an anonymized and simplified subset of a real Canvas gradebook for an introductory STEM course at UW. <!--# (SAY: "IN THIS SUBSET OF DATA"…DON'T SAY "CLASS") -->
 -   `myUW_quarter1.csv`: an anonymized version of the MyUW classlist for the same course.
+
+## Using `read_csv()` to read data files, part 1
+
+- `read_csv()` creates a two-dimensional data structure called a "dataframe" from the csv file 
+  - a row contains values specific to a particular student for several different data fields
+  - a column contains values specific to a particular data field for several different students 
+- Column header names are taken from the first row of the csv file (by default)
+- Sometimes column names from a csv file don't conform to R's expected syntax. We can tell `read_csv()` to make any necessary adjustments by using the `name_repair` option.
+
+## Using `read_csv()` to read data files, part 2
+
+```{r echo=TRUE, eval=FALSE}
+grades <- read_csv("data/Grades_quarter1.csv", name_repair = "universal")
+myuw   <- read_csv("data/myUW_quarter1.csv", name_repair = "universal")
+```
+
+**In English**: "The dataframe `grades` gets [ `<-`] the result of reading the csv file "data/Grades_quarter1.csv", with the universal name repair option enabled."
+
 
