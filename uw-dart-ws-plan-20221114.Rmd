@@ -1,5 +1,5 @@
 ---
-title: "UW DART Workshop Plan"
+title: "Data Analysis for Reflective Teaching Workshop"
 author: "Colleen Craig"
 date: "`r Sys.Date()`"
 output: 
@@ -11,21 +11,21 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Data Analysis for Reflective Teaching Workshop
-
-Our guiding questions:
+# Our guiding questions:
 
 -   How does student performance / attendance in a large-lecture introductory science course correlate with class standing?
 -   How does student performance / attendance in a large-lecture introductory science course correlate with major?
 
 ------------------------------------------------------------------------
 
-## Getting set up
+# Getting set up
 
-### R code introduced in this section:
+## R code introduced in this section:
 
 - `library()`
 - `tidyverse`
+- `ggplot`
+- `dplyr`
 
 To write the commands for this workshop, we need to load a package of functions that aren't already part of the standard R language. (NOTE: We could perform all the tasks in this workshop without these functions, but they will make our work much easier.)
 
@@ -35,21 +35,24 @@ The package of functions we need is called the `tidyverse`, and the command we u
 library(tidyverse)
 ```
 
+## About the `tidyverse`
+
 The tidyverse is an umbrella package which itself contains several packages. The tidyverse packages we will use in particular are:
 
 -   `ggplot`: for data visualization
 -   `dplyr`: for data wrangling <!-- -   `magrittr`: for the "pipe" operator, `%>%`, a useful programming shortcut --> <!-- -   `tibble`: for creating datasets in a fashion consistent with tidyverse functions -->
 
-<!-- Should we bother to include `magrittr` and `tibble` in this list? -->
 
-## Import the data
+# Importing the data
 
-R code introduced in this section:
+## R code introduced in this section:
 
 -   `dir()`
 -   `read_csv()`, with the `name_repair` option
 -   `glimpse()`
 -   `<-`: the assignment operator
+
+## ??
 
 We will examine course data which is readily available from CANVAS gradebooks and the teaching tab on myUW. Sample data files are contained in the `data/` sub-directory. <!-- Include links to instructions for obtaining these data files for the participants. -->
 
@@ -59,11 +62,14 @@ You can view the contents of `data/` by clicking in to the directory in the lowe
 dir("data/") # list the contents of the data/ directory
 ```
 
+## Explore the `data/` Sub-directory
+
 The data/ directory contains two files in the comma-separated values (csv) format:
 
--   "Grades_quarter1.csv": an anonymized and simplified subset of a real Canvas gradebook for an introductory STEM course at UW. <!--# (SAY: "IN THIS SUBSET OF DATA"…DON'T SAY "CLASS") -->
+- `Grades_quarter1.csv`: an anonymized and simplified subset of a real Canvas gradebook for an introductory STEM course at UW. <!--# (SAY: "IN THIS SUBSET OF DATA"…DON'T SAY "CLASS") -->
+- `myUW_quarter1.csv`: an anonymized version of the MyUW classlist for the same course.
 
--   "myUW_quarter1.csv": an anonymized version of the MyUW classlist for the same course.
+## Using `read_csv()` to read data files
 
 We will read in the data from each file using the `read_csv()` function. This function will create a two-dimensional data structure called a "dataframe" from the csv file. A dataframe is similar to a spreadsheet, in that each row contains values specific to a particular student for several different data fields, and the columns contain values specific to a particular data field for several different students. The columns will each have a header name which is taken from the first row of the csv file (by default).
 
@@ -75,6 +81,8 @@ myuw   <- read_csv("data/myUW_quarter1.csv", name_repair = "universal")
 ```
 
 **In English**: "The dataframe `grades` gets [ `<-`] the result of reading the csv file "data/Grades_quarter1.csv", with the universal name repair option enabled."
+
+## Exploring the ` dataframes
 
 Let's take a look at the contents of the dataframes using the `glimpse()` function
 
