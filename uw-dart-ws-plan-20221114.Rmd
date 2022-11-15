@@ -42,7 +42,7 @@ The tidyverse is an umbrella package which itself contains several packages. The
 
 <!-- Should we bother to include `magrittr` and `tibble` in this list? -->
 
-### Import the data
+## Import the data
 
 R code introduced in this section:
 
@@ -74,7 +74,7 @@ grades <- read_csv("data/Grades_quarter1.csv", name_repair = "universal")
 myuw   <- read_csv("data/myUW_quarter1.csv", name_repair = "universal")
 ```
 
-**In English**: "The dataframe `grades` gets [ `<-`] the result of reading the csv file"data/Grades_quarter1.csv", with the universal name repair option enabled."
+**In English**: "The dataframe `grades` gets [ `<-`] the result of reading the csv file "data/Grades_quarter1.csv", with the universal name repair option enabled."
 
 Let's take a look at the contents of the dataframes using the `glimpse()` function
 
