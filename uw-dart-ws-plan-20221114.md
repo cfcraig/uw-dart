@@ -1,5 +1,5 @@
 ---
-title: "UW DART Workshop Plan"
+title: "Data Analysis for Reflective Teaching Workshop"
 author: "Colleen Craig"
 date: "2022-11-15"
 output: 
@@ -9,21 +9,21 @@ output:
 
 
 
-# Data Analysis for Reflective Teaching Workshop
-
-Our guiding questions:
+# Our guiding questions:
 
 -   How does student performance / attendance in a large-lecture introductory science course correlate with class standing?
 -   How does student performance / attendance in a large-lecture introductory science course correlate with major?
 
 ------------------------------------------------------------------------
 
-## Getting set up
+# Getting set up
 
-### R code introduced in this section:
+## R code introduced in this section:
 
 - `library()`
 - `tidyverse`
+- `ggplot`
+- `dplyr`
 
 To write the commands for this workshop, we need to load a package of functions that aren't already part of the standard R language. (NOTE: We could perform all the tasks in this workshop without these functions, but they will make our work much easier.)
 
@@ -83,21 +83,24 @@ library(tidyverse)
 ## x dplyr::lag()    masks stats::lag()
 ```
 
+## About the `tidyverse`
+
 The tidyverse is an umbrella package which itself contains several packages. The tidyverse packages we will use in particular are:
 
 -   `ggplot`: for data visualization
 -   `dplyr`: for data wrangling <!-- -   `magrittr`: for the "pipe" operator, `%>%`, a useful programming shortcut --> <!-- -   `tibble`: for creating datasets in a fashion consistent with tidyverse functions -->
 
-<!-- Should we bother to include `magrittr` and `tibble` in this list? -->
 
-## Import the data
+# Importing the data
 
-R code introduced in this section:
+## R code introduced in this section:
 
 -   `dir()`
 -   `read_csv()`, with the `name_repair` option
 -   `glimpse()`
 -   `<-`: the assignment operator
+
+## ??
 
 We will examine course data which is readily available from CANVAS gradebooks and the teaching tab on myUW. Sample data files are contained in the `data/` sub-directory. <!-- Include links to instructions for obtaining these data files for the participants. -->
 
@@ -112,11 +115,14 @@ dir("data/") # list the contents of the data/ directory
 ## [1] "Grades_quarter1.csv" "myUW_quarter1.csv"
 ```
 
+## Explore the `data/` Sub-directory
+
 The data/ directory contains two files in the comma-separated values (csv) format:
 
--   "Grades_quarter1.csv": an anonymized and simplified subset of a real Canvas gradebook for an introductory STEM course at UW. <!--# (SAY: "IN THIS SUBSET OF DATA"…DON'T SAY "CLASS") -->
+- `Grades_quarter1.csv`: an anonymized and simplified subset of a real Canvas gradebook for an introductory STEM course at UW. <!--# (SAY: "IN THIS SUBSET OF DATA"…DON'T SAY "CLASS") -->
+- `myUW_quarter1.csv`: an anonymized version of the MyUW classlist for the same course.
 
--   "myUW_quarter1.csv": an anonymized version of the MyUW classlist for the same course.
+## Using `read_csv()` to read data files
 
 We will read in the data from each file using the `read_csv()` function. This function will create a two-dimensional data structure called a "dataframe" from the csv file. A dataframe is similar to a spreadsheet, in that each row contains values specific to a particular student for several different data fields, and the columns contain values specific to a particular data field for several different students. The columns will each have a header name which is taken from the first row of the csv file (by default).
 
@@ -150,7 +156,7 @@ grades <- read_csv("data/Grades_quarter1.csv", name_repair = "universal")
 ```
 
 ```r
-myuw   <- read_csv("data/myUW_quarter1.csv", name_repair = "universal")
+demographics   <- read_csv("data/myUW_quarter1.csv", name_repair = "universal")
 ```
 
 ```
@@ -172,6 +178,10 @@ myuw   <- read_csv("data/myUW_quarter1.csv", name_repair = "universal")
 ```
 
 **In English**: "The dataframe `grades` gets [ `<-`] the result of reading the csv file "data/Grades_quarter1.csv", with the universal name repair option enabled."
+
+# START HERE NEXT TIME FOR CONVERTING THIS DOCUMENT INTO A QUARTO PRESENTATION
+
+## Exploring the ` dataframes
 
 Let's take a look at the contents of the dataframes using the `glimpse()` function
 
@@ -203,7 +213,7 @@ glimpse(grades)
 
 
 ```r
-glimpse(myuw)
+glimpse(demographics)
 ```
 
 ```
@@ -226,19 +236,19 @@ glimpse(myuw)
 
 <!-- PARTICIPANTS SHOULD NOTICE THAT:  -->
 
-<!--   * `SIS.Login.ID` FROM `grades` AND `UWNetID` FROM `myuw` CONTAIN THE SAME DATA -->
+<!--   * `SIS.Login.ID` FROM `grades` AND `UWNetID` FROM `demographics` CONTAIN THE SAME DATA -->
 
-<!--   * `Student` IN `grades` AND `Pronouns` IN `myuw` BOTH CONTAIN MOSTLY NAs -->
+<!--   * `Student` IN `grades` AND `Pronouns` IN `demographics` BOTH CONTAIN MOSTLY NAs -->
 
 <!--   * THE SECOND ROW IN `grades` CONTAINS ONLY THE MAX POINT VALUES FOR AN ASSIGMMENT... -->
 
 <!--     IT'S NOT ACTUALLY STUDENT DATA. -->
 
-To explore our guiding questions, we need to connect the course performance data in `grades` to the class standing and major data in `myuw`. We know that there is a common data field in both dataframes (`SIS.Login.ID` in `grades`; `UWNetID` from `myuw`) that will allow us to combine them into one (this process is similar to the VLOOKUP function in Excel). <!-- Link to VLOOKUP explanation. --> However, we should do a little data cleaning first to get rid of unnecessary columns and rows.
+To explore our guiding questions, we need to connect the course performance data in `grades` to the class standing and major data in `demographics`. We know that there is a common data field in both dataframes (`SIS.Login.ID` in `grades`; `UWNetID` from `demographics`) that will allow us to combine them into one (this process is similar to the VLOOKUP function in Excel). <!-- Link to VLOOKUP explanation. --> However, we should do a little data cleaning first to get rid of unnecessary columns and rows.
 
 ### Clean the Data
 
-#### The `myUW` Dataframe
+#### The `demographics` Dataframe
 
 R code introduced in this section:
 
@@ -247,41 +257,41 @@ R code introduced in this section:
 -   `%>%`: the pipe operator, which takes the output of one function call and hands it to the next function call in a sequence
 -   `-`: ???
 
-Let's remove the unnecessary column from `myuw`. We can use the `select()` function to extract just the columns that we want.
+Let's remove the unnecessary column from `demographics`. We can use the `select()` function to extract just the columns that we want.
 
 
 ```r
-myuw_2 <- select(myuw, UWNetID, Credits, Class, Major)
+demographics_2 <- select(demographics, UWNetID, Credits, Class, Major)
 ```
 
-**In English**: The dataframe `myuw_2` *gets* [`<-`] the result of selecting the columns `UWNetID`, `Credits`, `Class`, and `Major` from the `myuw` dataframe.
+**In English**: The dataframe `demographics_2` *gets* [`<-`] the result of selecting the columns `UWNetID`, `Credits`, `Class`, and `Major` from the `demographics` dataframe.
 
 Alternatively, we can use `select()` to "subtract" the `Pronouns` column from the dataframe:
 
 
 ```r
-myuw_3 <- select(myuw, -Pronouns)
+demographics_3 <- select(demographics, -Pronouns)
 ```
 
 You can convince yourself that these are identical dataframes using the `all_equal()` function, which will return `TRUE` if all elements in each dataframe are identical.
 
 
 ```r
-all_equal(myuw_2, myuw_3)
+all_equal(demographics_2, demographics_3)
 ```
 
 ```
 ## [1] TRUE
 ```
 
-IF TIME: What happens if you send `myuw` and `myuw_2` to `all_equal()`?
+IF TIME: What happens if you send `demographics` and `demographics_2` to `all_equal()`?
 
-Another way to use `select()`---and many other functions---is in conjunction with the "pipe" operator, `%>%`. Using the pipe helps to make your code more readable. We would say the line of code below as "The dataframe `myuw_4` *gets* [ `<-` ] the result of taking `myuw` and *then* [ `%>%` ] selecting all of the columns except [ `-` ] `Pronouns`.
+Another way to use `select()`---and many other functions---is in conjunction with the "pipe" operator, `%>%`. Using the pipe helps to make your code more readable. We would say the line of code below as "The dataframe `demographics_4` *gets* [ `<-` ] the result of taking `demographics` and *then* [ `%>%` ] selecting all of the columns except [ `-` ] `Pronouns`.
 
 
 ```r
-myuw_4 <- myuw %>% select(-Pronouns)
-all_equal(myuw_2, myuw_4)
+demographics_4 <- demographics %>% select(-Pronouns)
+all_equal(demographics_2, demographics_4)
 ```
 
 ```
@@ -392,32 +402,32 @@ There is only one row for each of these columns that contain `NA`: the remainder
 grades_3 <- grades_2 %>% filter(!is.na(Section))
 ```
 
-### Join the `myuw` and `grades` Dataframes
+### Join the `demographics` and `grades` Dataframes
 
 R code introduced in this section
 
 -   `left_join()`
 
-Now we are ready to join the student data and course gradebook dataframes by matching the UW NETID in `myuw_4` with `SIS.Login.ID` in `grades_3`. However, note that `grades_3` contains 100 rows, whereas `myuw_4` contains 110. What does this imply?
+Now we are ready to join the student data and course gradebook dataframes by matching the UW NETID in `demographics_4` with `SIS.Login.ID` in `grades_3`. However, note that `grades_3` contains 100 rows, whereas `demographics_4` contains 110. What does this imply?
 
 <!-- ANS: 10 students dropped the class before the end of the quarter. -->
 
-For this workshop, we are only interested in analyzing the performance of students who completed the course, so we can ignore then ten extra students in `myuw_4` and just pull in the registration data that matches the list of students in `grades_3`. An easy way to do this is with the `tidyverse` function `left_join()`. (This function is very similar in spirit to VLOOKUP in Excel.)
+For this workshop, we are only interested in analyzing the performance of students who completed the course, so we can ignore then ten extra students in `demographics_4` and just pull in the registration data that matches the list of students in `grades_3`. An easy way to do this is with the `tidyverse` function `left_join()`. (This function is very similar in spirit to VLOOKUP in Excel.)
 
-Below, the new dataframe `course_data` *gets* the `left_join()` of `grades_3` and `myuw_4`, by the common data values in the "SIS.Login.ID" and "UWNetID" columns.
+Below, the new dataframe `course_data` *gets* the `left_join()` of `grades_3` and `demographics_4`, by the common data values in the "SIS.Login.ID" and "UWNetID" columns.
 
 
 ```r
-course_data <- left_join(grades_3, myuw_4, by = c("SIS.Login.ID" = "UWNetID"))
+course_data <- left_join(grades_3, demographics_4, by = c("SIS.Login.ID" = "UWNetID"))
 ```
 
 How many rows and columns does `course_data` have? Why do you think this function is called *left* join?
 
-**Explore R**: How many rows and columns would the `left_join()` of `myuw_4` and `grades_3` have? Once you have a prediction, run the code below to see if you're right!
+**Explore R**: How many rows and columns would the `left_join()` of `demographics_4` and `grades_3` have? Once you have a prediction, run the code below to see if you're right!
 
 
 ```r
-tmp_df <- left_join(myuw_4, grades_3, by = c("UWNetID" = "SIS.Login.ID"))
+tmp_df <- left_join(demographics_4, grades_3, by = c("UWNetID" = "SIS.Login.ID"))
 glimpse(tmp_df)
 ```
 
