@@ -82,6 +82,8 @@ demographics   <- read_csv("data/myUW_quarter1.csv", name_repair = "universal")
 
 **In English**: "The dataframe `grades` gets [ `<-`] the result of reading the csv file "data/Grades_quarter1.csv", with the universal name repair option enabled."
 
+# START HERE NEXT TIME FOR CONVERTING THIS DOCUMENT INTO A QUARTO PRESENTATION
+
 ## Exploring the ` dataframes
 
 Let's take a look at the contents of the dataframes using the `glimpse()` function
